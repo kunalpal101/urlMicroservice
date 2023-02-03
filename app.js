@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
 const Schema = mongoose.Schema;
 const UrlSchema = new Schema({
-  actualUrl: { type: String },
+  actualUrl: { type: String, unique: true },
   newUrl: { type: Number },
 });
 
@@ -51,60 +51,95 @@ app.post("/url-fetch", function (req, res) {
   var String = req.body;
   console.log("Received body: " + String.actualUrl);
 
-  Url.find({ actualUrl: String.actualUrl }, function (err, data) {
+  // Url.find({ actualUrl: String.actualUrl }, function (err, data) {
+  //   if (err) return console.log(err);
+  //   else {
+  //     if (!data.length) {
+  //       //data.length needed to check if data is already present or not
+  //       console.log("Data not found");
+  //       Url.find({ actualUrl: "flag" }, function (err, data) {
+  //         if (err) return console.log(err);
+  //         // console.log(data[0]);
+  //         flag = Number(data[0].newUrl) + 1;
+
+  //         let createAndSave = function (done) {
+  //           let new_url = new Url({
+  //             actualUrl: String.actualUrl,
+  //             newUrl: flag,
+  //           });
+  //           console.log("DONE");
+  //           new_url.save(function (err, data) {
+  //             if (err) return console.log("Error is " + err);
+  //             // done(null);
+  //           });
+
+  //           Url.findOneAndUpdate(
+  //             { actualUrl: "flag" },
+  //             { newUrl: flag },
+  //             { new: true },
+  //             (err, updatedDoc) => {
+  //               // console.log("Flag updated");
+  //               // console.log("Flag value = " +flag);
+  //               if (err) return console.log(err);
+  //               //console.log(updatedDoc);
+  //               //done(null, updatedDoc);
+  //             }
+  //           );
+  //         };
+
+  //         createAndSave();
+  //         res.json({ new_Url: flag });
+  //       });
+  //       return;
+  //     }
+
+  //     // if (data !== []) {
+
+  //     // }
+  //     var data_found = data[0];
+  //     console.log(data);
+  //     console.log(data[0]);
+  //     console.log(data_found);
+  //     //console.log("found full=" + x);
+  //     console.log("found=" + data_found.newUrl);
+
+  //     res.send({ new_Url: data_found.newUrl });
+  //   }
+  // });
+  Url.count({}, async function (err, data) {
+    let flag = await data;
     if (err) return console.log(err);
-    else {
-      if (!data.length) {
-        //data.length needed to check if data is already present or not
-        console.log("Data not found");
-        Url.find({ actualUrl: "flag" }, function (err, data) {
-          if (err) return console.log(err);
-          // console.log(data[0]);
-          flag = Number(data[0].newUrl) + 1;
-
-          let createAndSave = function (done) {
-            let new_url = new Url({
-              actualUrl: String.actualUrl,
-              newUrl: flag,
-            });
-            console.log("DONE");
-            new_url.save(function (err, data) {
-              if (err) return console.log("Error is " + err);
-              // done(null);
-            });
-
-            Url.findOneAndUpdate(
-              { actualUrl: "flag" },
-              { newUrl: flag },
-              { new: true },
-              (err, updatedDoc) => {
-                // console.log("Flag updated");
-                // console.log("Flag value = " +flag);
-                if (err) return console.log(err);
-                //console.log(updatedDoc);
-                //done(null, updatedDoc);
-              }
-            );
-          };
-
-          createAndSave();
-          res.json({ new_Url: flag });
+    //console.log(data);
+    Url.find({ actualUrl: String.actualUrl }, function (err, data) {
+      if (err) console.log(err);
+      if (data != "") {
+        //Need to put data[0] as the data received from .find will be an array
+        res.json({
+          status: "duplication error",
+          actualUrl: data[0].actualUrl,
+          newUrl: data[0].newUrl,
         });
-        return;
+        return console.log("URL already present with value: " + data[0].newUrl);
+      } else {
+        flag++;
+        let new_url = new Url({
+          actualUrl: String.actualUrl,
+          newUrl: flag,
+        });
+        new_url.save(function (err, data) {
+          if (err) return console.log(err);
+        });
+        res.json({
+          status: "success",
+          actualUrl: String.actualUrl,
+          newUrl: flag,
+        });
       }
 
-      // if (data !== []) {
+      // if (data == "") {
 
       // }
-      var data_found = data[0];
-      console.log(data);
-      console.log(data[0]);
-      console.log(data_found);
-      //console.log("found full=" + x);
-      console.log("found=" + data_found.newUrl);
-
-      res.send({ new_Url: data_found.newUrl });
-    }
+    });
   });
 });
 
