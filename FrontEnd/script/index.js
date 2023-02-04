@@ -50,32 +50,12 @@ subButton_2.onclick = function () {
     }),
   })
     .then((res) => {
-      return res.json();
+      if (res.status == 404) {
+        window.alert("No such short URL found");
+      } else return res.json();
     })
     .then((data) => {
-      if (data.length == 2) {
-        console.log(data[1].actualUrl);
-        let newPage = data[1].actualUrl;
-        //location.replace();
-        window.open(newPage);
-      } else if (data.actualUrl == 1.1) {
-        alert("No such short URL found!");
-      } else {
-        console.log(data[0].actualUrl);
-
-        let newPage = data[0].actualUrl;
-        console.log(newPage);
-        //location.replace();
-        location.href(newPage, "__blank");
-      }
+      console.log(data[0].actualUrl);
+      window.open("https://" + data[0].actualUrl);
     });
 };
-
-/*For GET */
-// subButton_2.onclick = function () {
-//   console.log("Clicked!!");
-
-//   fetch("http://127.0.0.1:8080/url-direct")
-//     .then((res) => res.json())
-//     .then((data) => console.log(data));
-// };
