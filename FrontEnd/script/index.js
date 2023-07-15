@@ -1,4 +1,5 @@
-let back_uri = "http://127.0.0.1:8080";
+//let back_uri = "http://127.0.0.1:8080";
+let back_uri = "https://kunal-urlmicroservice.cyclic.app";
 
 let subButton_1 = document.getElementById("submit-btn-1");
 let subButton_2 = document.getElementById("submit-btn-2");
