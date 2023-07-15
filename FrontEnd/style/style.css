@@ -76,4 +76,19 @@
   background-color: #819090;
   color: #fff;
   border: none;
+}
+
+@media only screen and (max-width: 767px) {
+  .main-div {
+    padding: 0.6rem;
+  }
+  .main-div .main-button {
+    padding: 0.6rem;
+  }
+  .main-div .main-button .border-extra .heading {
+    text-align: center;
+  }
+  .main-div .main-button .border-extra .desc {
+    text-align: center;
+  }
 }/*# sourceMappingURL=style.css.map */
