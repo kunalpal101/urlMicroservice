@@ -28,25 +28,16 @@ const UrlSchema = new Schema({
   newUrl: { type: Number },
 });
 
-console.log("Hello World");
+console.log("Program Initiated...");
 
 let Url;
 Url = mongoose.model("Url", UrlSchema);
 
-let createAndSave = function (done) {
-  let new_url = new Url({ actualUrl: "flag", newUrl: 0 });
-  new_url.save(function (err, data) {
-    if (err) return console.log("Error is " + err);
-    // done(null);
-  });
-};
-
-//createAndSave();
 
 let flag = 0;
 app.post("/url-fetch", function (req, res) {
   var String = req.body;
-  console.log("Received body: " + String.actualUrl);
+  //console.log("Received body: " + String.actualUrl);
 
   Url.count({}, async function (err, data) {
     let flag = await data;
@@ -82,11 +73,11 @@ app.post("/url-fetch", function (req, res) {
 });
 
 app.post("/url-direct", function (req, res) {
-  console.log(req.body);
+  //console.log(req.body);
 
   var findURL = function (done) {
     var Body = req.body;
-    console.log("value of Body.newURL=" + Body.newUrl);
+    //console.log("value of Body.newURL=" + Body.newUrl);
 
     Url.find({ newUrl: Body.newUrl }, function (err, data) {
       if (err) return console.log("The error is " + err);
@@ -109,8 +100,8 @@ app.get("/", function (req, res) {
   app.use(express.static(__dirname + "/FrontEnd"));
 });
 
-// listen for requests :)
 
+// listen for requests :)
 var server = app.listen(8080, function () {
   console.log("Ready on port %d", server.address().port);
 });
